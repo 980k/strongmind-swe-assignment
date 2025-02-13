@@ -1,0 +1,2 @@
+# strongmind-swe-assignment
+ 
