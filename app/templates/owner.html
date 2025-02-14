@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topping Management</title>
+</head>
+<body>
+    <h1>Manage Toppings</h1>
+
+    <!-- Form to Add a New Topping -->
+    <form id="add-topping-form">
+        <label for="topping-name">Topping Name:</label>
+        <input type="text" id="topping-name" required>
+        <button type="submit">Add Topping</button>
+    </form>
+
+    <!-- List of Toppings -->
+    <ul id="topping-list">
+        <!-- Dynamically generated toppings -->
+    </ul>
+
+    <script src="{{ url_for('static', filename='js/owner.js') }}" defer></script>
+</body>
+</html>
