@@ -33,5 +33,9 @@ def home():
 def owner():
     return render_template('owner.html')
 
+@app.route('/chef')
+def chef():
+    return render_template('chef.html')
+
 if __name__ == "__main__":
     app.run(debug=True)

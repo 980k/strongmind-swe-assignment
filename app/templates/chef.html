@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Management</title>
+</head>
+<body>
+    <form id="add-pizza-form">
+        <label for="pizza-name">Pizza Name:</label>
+        <input type="text" id="pizza-name" required>
+
+        <fieldset id="pizza-toppings">
+            <legend>Select Toppings:</legend>
+            <!-- Dynamically generated toppings-->
+        </fieldset>
+
+        <button type="submit">Add Pizza</button>
+    </form>
+
+    <div id="pizzas-container">
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chef.js') }}" defer></script>
+</body>
+</html>
