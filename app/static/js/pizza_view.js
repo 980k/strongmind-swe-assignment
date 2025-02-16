@@ -14,7 +14,7 @@ function updatePizzaToppings(toppings) {
 }
 
 function refreshPizzaOptions() {
-    fetch('/toppings/get_toppings', {
+    fetch('/toppings', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
@@ -46,84 +46,9 @@ function fetchPizzas() {
         });
 }
 
-// function fetchPizzas() {
-//     fetch("/pizzas")
-//     .then(response => response.json())
-//     .then(pizzas => {
-//         const container = document.getElementById("pizzas-container");
-//         container.innerHTML = ""; // Clear existing content
-
-//         pizzas.forEach(pizza => {
-//             const pizzaDiv = document.createElement("div");
-//             pizzaDiv.className = "pizza-container";
-//             pizzaDiv.innerHTML = `
-//                 <div class="display-view">
-//                     <h3>${pizza.name}</h3>
-//                     <p><strong>Toppings:</strong> ${pizza.toppings.join(", ")}</p>
-//                     <button onclick="editPizza('${pizza.id}')">Edit</button>
-//                 </div>
-
-//                 <div class="edit-view" style="display: none;">
-//                     <!-- Dynamically populate edit form here if necessary -->
-//                 </div>
-//             `;
-
-//             container.appendChild(pizzaDiv); // Append the created element
-//         });
-//     })
-//     .catch(error => console.error("Error fetching pizzas:", error)); // Handle potential errors
-// }
-
-// function fetchPizzas() {
-//     fetch("/pizzas")
-//     .then(response => response.json())
-//     .then(pizzas => {
-//         const container = document.getElementById("pizzas-container");
-//         container.innerHTML = ""; // Clear existing content
-
-//         pizzas.forEach(pizza => {
-//             const pizzaDiv = document.createElement("div");
-//             pizzaDiv.className = "pizza-container";
-//             pizzaDiv.setAttribute("data-id", pizza.id); // Store the pizza ID on the container
-
-//             // Dynamically create the toppings checkboxes
-//             const toppingsCheckboxes = pizza.toppings.map(topping => {
-//                 return `
-//                     <label><input type="checkbox" name="toppings" value="${topping}" checked> ${topping}</label><br>
-//                 `;
-//             }).join(""); // Join all toppings checkboxes into a single string
-
-//             pizzaDiv.innerHTML = `
-//                 <div class="display-view">
-//                     <h3>${pizza.name}</h3>
-//                     <p><strong>Toppings:</strong> ${pizza.toppings.join(", ")}</p>
-//                     <button onclick="toggleEditView('${pizza.id}')">Edit</button>
-//                 </div>
-
-//                 <div class="edit-view" style="display: none;">
-//                     <form id="edit-pizza-form-${pizza.id}">
-//                         <label for="pizza-name-${pizza.id}">Pizza Name:</label>
-//                         <input type="text" id="pizza-name-${pizza.id}" value="${pizza.name}" required>
-
-//                         <fieldset id="pizza-toppings-${pizza.id}">
-//                             <legend>Select Toppings:</legend>
-//                             ${toppingsCheckboxes}
-//                         </fieldset>
-
-//                         <button type="submit" onclick="updatePizza('${pizza.id}')">Save</button>
-//                     </form>
-//                 </div>
-//             `;
-
-//             container.appendChild(pizzaDiv); // Append the created pizza div
-//         });
-//     })
-//     .catch(error => console.error("Error fetching pizzas:", error)); // Handle potential errors
-// }
-
 function fetchPizzas() {
     // First, fetch the available toppings
-    fetch("/toppings/get_toppings")
+    fetch("/toppings")
     .then(response => response.json())
     .then(toppings => {
         // After toppings are fetched, proceed to fetch pizzas

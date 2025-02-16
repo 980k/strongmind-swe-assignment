@@ -31,11 +31,11 @@ def home():
 
 @app.route('/owner')
 def owner():
-    return render_template('owner.html')
+    return render_template('topping_view.html')
 
 @app.route('/chef')
 def chef():
-    return render_template('chef.html')
+    return render_template('pizza_view.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
