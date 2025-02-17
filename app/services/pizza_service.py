@@ -31,12 +31,12 @@ class PizzaService:
         pizzas = Pizza.query.all()
 
         if not pizzas:
-            return {"message": "No pizzas found."}
+            return []
         
         return [{
         'id': pizza.id,
         'name': pizza.name,
-        'toppings': [topping.name for topping in pizza.toppings]  # Access toppings via the relationship
+        'toppings': [{'id': topping.id, 'name': topping.name} for topping in pizza.toppings]  # Access toppings via the relationship
         } for pizza in pizzas]
     
     def get_pizza(self, pizza_id):

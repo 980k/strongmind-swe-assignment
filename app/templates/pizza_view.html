@@ -4,22 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizza Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pizza_style.css') }}">
 </head>
 <body>
+    <header>
+        <h1>Pizza Management</h1>
+    </header>
+
     <form id="add-pizza-form">
         <label for="pizza-name">Pizza Name:</label>
-        <input type="text" id="pizza-name" required>
+        <input type="text" id="pizza-name" name="pizza_name" required>
 
         <fieldset id="pizza-toppings">
             <legend>Select Toppings:</legend>
-            <!-- Dynamically generated toppings-->
+            <!-- Dynamically generated toppings -->
         </fieldset>
 
         <button type="submit">Add Pizza</button>
     </form>
 
-    <div id="pizzas-container">
+    <button id="refresh-button">Refresh</button>
 
+    <!-- This div will display status messages -->
+    <div id="status-message"></div>
+
+    <div id="error-message"></div>
+
+    <h2>Existing Pizzas</h2>
+    <div id="pizzas-container">
+        <!-- Pizza list dynamically inserted here -->
     </div>
 
     <script src="{{ url_for('static', filename='js/pizza_view.js') }}" defer></script>

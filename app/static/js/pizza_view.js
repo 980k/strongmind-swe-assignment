@@ -1,216 +1,199 @@
-function updatePizzaToppings(toppings) {
+document.addEventListener("DOMContentLoaded", () => {
+    refreshPizzaOptions();
+    fetchPizzas();
+});
+
+// Attach event listener to the refresh button directly
+const refreshButton = document.getElementById('refresh-button');
+refreshButton.addEventListener('click', () => {
+    refreshPizzaOptions();
+    fetchPizzas();
+});
+
+// Cache DOM elements
+const pizzasContainer = document.getElementById("pizzas-container");
+const pizzaForm = document.getElementById("add-pizza-form");
+const pizzaNameInput = document.getElementById("pizza-name");
+
+// Utility function for showing status messages
+function showStatusMessage(message, isError = false) {
+    const statusMessageElement = document.getElementById('status-message');
+    statusMessageElement.textContent = message;
+    statusMessageElement.style.color = isError ? 'red' : 'green'; // Use inline styles for color
+    statusMessageElement.style.display = 'block'; // Show the message
+
+    // Hide the message after 3 seconds
+    setTimeout(() => {
+        statusMessageElement.style.display = 'none'; // Hide the message
+    }, 3000);
+}
+
+async function fetchJson(url, options = {}) {
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return await response.json();
+    } catch (error) {
+        console.error(`Fetch error (${url}):`, error);
+        return null;
+    }
+}
+
+// ** Load available toppings **
+async function refreshPizzaOptions() {
+    const toppings = await fetchJson('/toppings');
+    if (!toppings) return;
+
     const pizzaToppings = document.getElementById('pizza-toppings');
     pizzaToppings.innerHTML = '';
 
     toppings.forEach(topping => {
-        const pizzaToppingItem = document.createElement('label')
-
-        pizzaToppingItem.innerHTML = `
-        <input type="checkbox" name="toppingOptions" value="${topping.id}"> ${topping.name}</label><br>
+        const label = document.createElement('label');
+        label.innerHTML = `
+            <input type="checkbox" name="toppingOptions" value="${topping.id}"> ${topping.name}
         `;
-
-        pizzaToppings.appendChild(pizzaToppingItem)
-    })
+        pizzaToppings.appendChild(label);
+        pizzaToppings.appendChild(document.createElement('br'));
+    });
 }
 
-function refreshPizzaOptions() {
-    fetch('/toppings', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(data => updatePizzaToppings(data))
-    .catch(error => console.error('Error:', error));
+// ** Fetch and display all pizzas **
+async function fetchPizzas() {
+    const [pizzasData, toppings] = await Promise.all([fetchJson("/pizzas"), fetchJson("/toppings")]);
+
+    pizzasContainer.innerHTML = ""; // Clear before re-rendering
+
+    if (!Array.isArray(pizzasData) || pizzasData.length === 0) {
+        pizzasContainer.innerHTML = "<p>No pizzas available.</p>"; // Show a message if no pizzas
+        return;
+    }
+
+    pizzasData.forEach(pizza => {
+        pizzasContainer.appendChild(createPizzaElement(pizza, toppings));
+    });
 }
 
-function fetchPizzas() {
-    fetch("/pizzas") // Assuming this is your API endpoint
-        .then(response => response.json())
-        .then(pizzas => {
-            const container = document.getElementById("pizzas-container");
-            container.innerHTML = ""; // Clear before re-rendering
+// ** Create a single pizza card **
+function createPizzaElement(pizza, toppings) {
+    const pizzaDiv = document.createElement("div");
+    pizzaDiv.className = "pizza-container";
+    pizzaDiv.dataset.id = pizza.id;
 
-            const displayView = container.querySelector()
-            displayView.innerHTML = "";
+    // Convert toppings to a dictionary for faster lookup
+    const toppingsDict = Object.fromEntries(toppings.map(t => [t.id, t.name]));
+    const toppingNames = pizza.toppings.map(t => toppingsDict[t.id]).join(", ");
 
-            pizzas.forEach(pizza => {
-                const pizzaDiv = document.createElement("div");
-                pizzaDiv.className = "pizza";
-                pizzaDiv.innerHTML = `
-                    <h3>${pizza.name}</h3>
-                    <p><strong>Toppings:</strong> ${pizza.toppings.join(", ")}</p>
-                    <button onclick="editPizza('${pizza.id}')">Edit</button>
-                `;
-                displayView.appendChild(pizzaDiv);
-            });
-        });
+    // If no toppings, display "None"
+    const toppingsDisplay = toppingNames || "None";
+
+    pizzaDiv.innerHTML = `
+        <div class="display-view">
+            <h3>${pizza.name}</h3>
+            <p><strong>Toppings:</strong> ${toppingsDisplay}</p>
+
+            <button onclick="toggleEditView('${pizza.id}')">Edit</button>
+            <button onclick="deletePizza('${pizza.id}')">Delete</button>
+        </div>
+
+        <div class="edit-view" style="display: none;">
+            <form id="edit-pizza-form-${pizza.id}">
+                <label for="pizza-name-${pizza.id}">Pizza Name:</label>
+                <input type="text" id="pizza-name-${pizza.id}" value="${pizza.name}" required>
+
+                <fieldset id="pizza-toppings-${pizza.id}">
+                    <legend>Select Toppings:</legend>
+                    ${toppings.map(topping => `
+                        <label>
+                            <input type="checkbox" name="toppings" value="${topping.id}" 
+                            ${pizza.toppings.some(t => t.id === topping.id) ? "checked" : ""}> 
+                            ${topping.name}
+                        </label><br>
+                    `).join("")}
+                </fieldset>
+
+                <button type="button" data-pizza-id="${pizza.id}" data-topping-ids='${JSON.stringify(pizza.toppings.map(t => t.id))}' onclick="updatePizza(this)">Save</button>
+            </form>
+        </div>
+    `;
+
+    return pizzaDiv;
 }
 
-function fetchPizzas() {
-    // First, fetch the available toppings
-    fetch("/toppings")
-    .then(response => response.json())
-    .then(toppings => {
-        // After toppings are fetched, proceed to fetch pizzas
-        fetch("/pizzas")
-        .then(response => response.json())
-        .then(pizzas => {
-            const container = document.getElementById("pizzas-container");
-            container.innerHTML = ""; // Clear existing content
-
-            pizzas.forEach(pizza => {
-                const pizzaDiv = document.createElement("div");
-                pizzaDiv.className = "pizza-container";
-                pizzaDiv.setAttribute("data-id", pizza.id); // Store the pizza ID on the container
-
-                // Dynamically create the toppings checkboxes
-                const toppingsCheckboxes = toppings.map(topping => {
-                    const isChecked = pizza.toppings.includes(topping.name); // Check if this topping is part of the pizza
-                    return `
-                        <label><input type="checkbox" name="toppings" value="${topping.id}" ${isChecked ? "checked" : ""}> ${topping.name}</label><br>
-                    `;
-                }).join(""); // Join all toppings checkboxes into a single string                
-
-                pizzaDiv.innerHTML = `
-                    <div class="display-view">
-                        <h3>${pizza.name}</h3>
-                        <p><strong>Toppings:</strong> ${pizza.toppings.join(", ")}</p>
-                        <button onclick="toggleEditView('${pizza.id}')">Edit</button>
-                    </div>
-
-                    <div class="edit-view" style="display: none;">
-                        <form id="edit-pizza-form-${pizza.id}">
-                            <label for="pizza-name-${pizza.id}">Pizza Name:</label>
-                            <input type="text" id="pizza-name-${pizza.id}" value="${pizza.name}" required>
-
-                            <fieldset id="pizza-toppings-${pizza.id}">
-                                <legend>Select Toppings:</legend>
-                                ${toppingsCheckboxes}
-                            </fieldset>
-
-                            <button type="button" onclick="updatePizza('${pizza.id}', event)">Save</button>
-
-                        </form>
-                    </div>
-                `;
-
-                container.appendChild(pizzaDiv); // Append the created pizza div
-            });
-        })
-        .catch(error => console.error("Error fetching pizzas:", error)); // Handle potential errors
-    })
-    .catch(error => console.error("Error fetching toppings:", error)); // Handle errors for toppings fetch
-}
-
+// ** Toggle edit view **
 function toggleEditView(pizzaId) {
     const pizzaContainer = document.querySelector(`.pizza-container[data-id='${pizzaId}']`);
     const displayView = pizzaContainer.querySelector(".display-view");
     const editView = pizzaContainer.querySelector(".edit-view");
 
-    // Toggle the visibility of the views
-    displayView.style.display = displayView.style.display === "none" ? "block" : "none";
-    editView.style.display = editView.style.display === "none" ? "block" : "none";
+    const isEditing = editView.style.display === "block";
+    displayView.style.display = isEditing ? "block" : "none";
+    editView.style.display = isEditing ? "none" : "block";
 }
 
-function updatePizza(pizzaId, event) {
-    event.preventDefault(); // Prevent form submission
-
+// ** Update pizza **
+async function updatePizza(button) {
+    const pizzaId = button.getAttribute('data-pizza-id');
+    const toppingIdsJson = button.getAttribute('data-topping-ids');
+    
     const form = document.getElementById(`edit-pizza-form-${pizzaId}`);
     const pizzaName = form.querySelector(`#pizza-name-${pizzaId}`).value;
-    console.log(pizzaName);
+    const toppingsCheckboxes = form.querySelectorAll(`input[name="toppings"]:checked`);
+    const selectedToppings = Array.from(toppingsCheckboxes).map(cb => cb.value);
 
-    const toppingsCheckboxes = form.querySelectorAll(`#pizza-toppings-${pizzaId} input[type="checkbox"]`);
+    const currentToppingIds = JSON.parse(toppingIdsJson);  // Convert back to an array
 
-    const addToppingIds = [];
-    const removeToppingIds = [];
+    const addToppingIds = selectedToppings.filter(id => !currentToppingIds.includes(id));
+    const removeToppingIds = currentToppingIds.filter(id => !selectedToppings.includes(id));
 
-    // Fetch the pizza by ID to get its current toppings
-    fetch(`/pizzas/${pizzaId}`)
-        .then(response => response.json())
-        .then(pizza => {
-            // Get the IDs of the current toppings
-            const currentToppings = pizza.toppings.map(topping => topping.id);
-            console.log(currentToppings);
+    const response = await fetchJson(`/pizzas/${pizzaId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            pizza_name: pizzaName, 
+            add_topping_ids: addToppingIds, 
+            remove_topping_ids: removeToppingIds 
+        }),
+    });
 
-            // Compare each checkbox with the current toppings
-            toppingsCheckboxes.forEach(checkbox => {
-                const toppingId = checkbox.value;
-
-                if (checkbox.checked && !currentToppings.includes(toppingId)) {
-                    // If checked and not already in the pizza's toppings, add it to the addToppingIds array
-                    console.log("to add", toppingId)
-                    addToppingIds.push(toppingId);
-                } else if (!checkbox.checked && currentToppings.includes(toppingId)) {
-                    // If unchecked and present in the pizza's toppings, add it to the removeToppingIds array
-                    console.log("to delete", toppingId)
-                    removeToppingIds.push(toppingId);
-                }
-            });
-
-            // Make the PUT request to update the pizza
-            fetch(`/pizzas/${pizzaId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    pizza_name: pizzaName,
-                    add_topping_ids: addToppingIds,
-                    remove_topping_ids: removeToppingIds,
-                }),
-            })
-            .then(response => response.json())
-            .then(updatedPizza => {
-                console.log('Pizza updated:', updatedPizza);
-                // Optionally, update the UI here with the updated pizza details
-            })
-            .catch(error => console.error('Error updating pizza:', error));
-        })
-        .catch(error => console.error('Error fetching pizza:', error));
+    if (response) {
+        fetchPizzas(); // Refresh list
+        showStatusMessage("Pizza updated successfully!", false); // Success message
+    } else {
+        showStatusMessage("Pizza name already exists.", true); // Error message
+    }
 }
 
-// Add Pizza (POST request)
-document.getElementById('add-pizza-form').addEventListener('submit', async function (event) {
+// ** Delete pizza **
+async function deletePizza(pizzaId) {
+    const response = await fetchJson(`/pizzas/${pizzaId}`, { method: 'DELETE' });
+
+    if (response) {
+        document.querySelector(`.pizza-container[data-id='${pizzaId}']`).remove();
+        showStatusMessage("Pizza deleted successfully!", false); // Success message
+    } else {
+        showStatusMessage("Failed to delete pizza.", true); // Error message
+    }
+}
+
+// ** Add Pizza **
+pizzaForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // Get pizza name
-    const pizzaName = document.getElementById('pizza-name').value;
-
-    // Get selected toppings
     const selectedToppings = Array.from(document.querySelectorAll('input[name="toppingOptions"]:checked'))
         .map(checkbox => checkbox.value);
 
-    // Create the data object to send in the request body
-    const pizzaData = {
-        pizza_name: pizzaName,
-        topping_ids: selectedToppings  // assuming the server expects topping names, or you can adjust to pass ids
-    };
+    const response = await fetchJson('/pizzas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pizza_name: pizzaNameInput.value, topping_ids: selectedToppings }),
+    });
 
-    try {
-        // Send a POST request to create a new pizza with toppings
-        const response = await fetch('/pizzas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(pizzaData),  // Send the data as JSON
-        });
-
-        // Handle the response from the server
-        if (response.ok) {
-            const jsonResponse = await response.json();
-            console.log('Pizza created:', jsonResponse);
-            // Optionally, you can update the UI, e.g., show a success message or redirect
-        } else {
-            const errorResponse = await response.json();
-            console.error('Error:', errorResponse);
-            // Handle the error, display a message, etc.
-        }
-    } catch (error) {
-        console.error('Network error:', error);
-        // Handle network errors, display a message, etc.
+    if (response) {
+        pizzaNameInput.value = ""; // Reset form
+        document.querySelectorAll('input[name="toppingOptions"]:checked').forEach(cb => cb.checked = false);
+        fetchPizzas(); // Refresh the pizza list
+        showStatusMessage("Pizza added successfully!", false); // Success message
+    } else {
+        showStatusMessage("Failed to add pizza.", true); // Error message
     }
 });
-
-refreshPizzaOptions()
-fetchPizzas()

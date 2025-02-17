@@ -22,7 +22,7 @@ class ToppingService:
         toppings = Topping.query.all()  # Query all toppings from the database
 
         if not toppings:
-            return {"message": "No toppings found."}
+            return []
 
         return [{'id': topping.id, 'name': topping.name} for topping in toppings]
     
