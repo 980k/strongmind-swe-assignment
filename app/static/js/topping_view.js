@@ -7,17 +7,16 @@ const addToppingForm = document.getElementById('add-topping-form');
 const toppingNameInput = document.getElementById('topping-name');
 const statusMessageElement = document.getElementById('status-message');
 
-// Utility function for showing status messages
 // Helper function to show status message
 function showStatusMessage(message, isError = false) {
     const statusMessageElement = document.getElementById('status-message');
     statusMessageElement.textContent = message;
-    statusMessageElement.style.color = isError ? 'red' : 'green'; // Use inline styles for color
-    statusMessageElement.style.display = 'block'; // Show the message by changing the display
+    statusMessageElement.style.color = isError ? 'red' : 'green';
+    statusMessageElement.style.display = 'block';
 
     // Hide the message after 3 seconds
     setTimeout(() => {
-        statusMessageElement.style.display = 'none'; // Hide the message
+        statusMessageElement.style.display = 'none';
     }, 3000);
 }
 
@@ -92,13 +91,13 @@ toppingListElement.addEventListener('click', async (event) => {
             }
             nameInput.style.display = 'none';
             nameSpan.style.display = 'inline-block';
-            button.textContent = 'Update'; // Change back to "Update"
+            button.textContent = 'Update';
         } else {
             // Enter editing mode
             nameInput.style.display = 'inline-block';
             nameSpan.style.display = 'none';
             nameInput.focus();
-            button.textContent = 'Save'; // Change button to "Save"
+            button.textContent = 'Save';
         }
     } else if (button.classList.contains('delete-btn')) {
             await deleteTopping(toppingId);
@@ -148,7 +147,7 @@ async function updateTopping(toppingId, newName) {
         if (!response.ok) throw new Error('Failed to update topping');
         
         showStatusMessage("Topping updated successfully!");
-        fetchToppings(); // Refresh the topping list
+        fetchToppings();
     } catch (error) {
         console.error("Error:", error);
         showStatusMessage('Error updating topping: Topping exists or invalid entry', true);
@@ -166,7 +165,7 @@ async function deleteTopping(toppingId) {
         if (!response.ok) throw new Error('Failed to delete topping');
         
         showStatusMessage("Topping deleted successfully!");
-        fetchToppings(); // Refresh the topping list
+        fetchToppings();
     } catch (error) {
         console.error("Error:", error);
         showStatusMessage('Error deleting topping', true);

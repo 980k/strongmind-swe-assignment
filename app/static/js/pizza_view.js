@@ -19,12 +19,12 @@ const pizzaNameInput = document.getElementById("pizza-name");
 function showStatusMessage(message, isError = false) {
     const statusMessageElement = document.getElementById('status-message');
     statusMessageElement.textContent = message;
-    statusMessageElement.style.color = isError ? 'red' : 'green'; // Use inline styles for color
-    statusMessageElement.style.display = 'block'; // Show the message
+    statusMessageElement.style.color = isError ? 'red' : 'green';
+    statusMessageElement.style.display = 'block';
 
     // Hide the message after 3 seconds
     setTimeout(() => {
-        statusMessageElement.style.display = 'none'; // Hide the message
+        statusMessageElement.style.display = 'none';
     }, 3000);
 }
 
@@ -91,8 +91,8 @@ function createPizzaElement(pizza, toppings) {
             <h3>${pizza.name}</h3>
             <p><strong>Toppings:</strong> ${toppingsDisplay}</p>
 
-            <button onclick="toggleEditView('${pizza.id}')">Edit</button>
-            <button onclick="deletePizza('${pizza.id}')">Delete</button>
+            <button class="update-button" onclick="toggleEditView('${pizza.id}')">Update</button>
+            <button class="delete-button" onclick="deletePizza('${pizza.id}')">Delete</button>
         </div>
 
         <div class="edit-view" style="display: none;">
@@ -111,7 +111,15 @@ function createPizzaElement(pizza, toppings) {
                     `).join("")}
                 </fieldset>
 
-                <button type="button" data-pizza-id="${pizza.id}" data-topping-ids='${JSON.stringify(pizza.toppings.map(t => t.id))}' onclick="updatePizza(this)">Save</button>
+                <button 
+                    type="button" 
+                    data-pizza-id="${pizza.id}" 
+                    data-topping-ids='${JSON.stringify(pizza.toppings.map(t => t.id))}' 
+                    onclick="updatePizza(this)"
+                >
+                    Save
+                </button>
+
             </form>
         </div>
     `;
@@ -156,10 +164,10 @@ async function updatePizza(button) {
     });
 
     if (response) {
-        fetchPizzas(); // Refresh list
-        showStatusMessage("Pizza updated successfully!", false); // Success message
+        fetchPizzas(); // Refresh list and get updates
+        showStatusMessage("Pizza updated successfully!", false);
     } else {
-        showStatusMessage("Pizza name already exists.", true); // Error message
+        showStatusMessage("Pizza name already exists.", true);
     }
 }
 
@@ -169,9 +177,9 @@ async function deletePizza(pizzaId) {
 
     if (response) {
         document.querySelector(`.pizza-container[data-id='${pizzaId}']`).remove();
-        showStatusMessage("Pizza deleted successfully!", false); // Success message
+        showStatusMessage("Pizza deleted successfully!", false);
     } else {
-        showStatusMessage("Failed to delete pizza.", true); // Error message
+        showStatusMessage("Failed to delete pizza.", true);
     }
 }
 
@@ -191,9 +199,9 @@ pizzaForm.addEventListener('submit', async (event) => {
     if (response) {
         pizzaNameInput.value = ""; // Reset form
         document.querySelectorAll('input[name="toppingOptions"]:checked').forEach(cb => cb.checked = false);
-        fetchPizzas(); // Refresh the pizza list
-        showStatusMessage("Pizza added successfully!", false); // Success message
+        fetchPizzas();
+        showStatusMessage("Pizza added successfully!", false);
     } else {
-        showStatusMessage("Failed to add pizza.", true); // Error message
+        showStatusMessage("Failed to add pizza.", true);
     }
 });

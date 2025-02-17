@@ -32,6 +32,7 @@ class ToppingService:
         if not topping:
             return {"error": "Topping not found."}
         
+        # prevents update if a topping already exists
         existing_topping_name = Topping.query.filter(Topping.name.ilike(new_topping_name)).first()
 
         if existing_topping_name:

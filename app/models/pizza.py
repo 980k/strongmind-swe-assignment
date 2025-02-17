@@ -7,12 +7,13 @@ class Pizza(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(100), nullable=False, unique=True)
 
-    # Define the relationship with the Topping model using the class reference
+    # Defines a many-to-many relationship between Pizza and Topping through the 
+    # pizzas_toppings association table.
     toppings = db.relationship(
-        'Topping',  # Target model
-        secondary='pizzas_toppings',  # Table name is automatically inferred here
-        backref='pizzas',  # This allows access to pizzas from the Topping model
-        lazy='dynamic'  # Optionally set how you want to load related items (e.g., lazy or joined)
+        'Topping',
+        secondary='pizzas_toppings',
+        backref='pizzas',
+        lazy='dynamic'
     )
 
     def __repr__(self):

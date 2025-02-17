@@ -16,7 +16,7 @@ class PizzaService:
         # Attach toppings if provided
         if topping_ids:
             toppings = Topping.query.filter(Topping.id.in_(topping_ids)).all()
-            new_pizza.toppings.extend(toppings)  # This is where you link the toppings
+            new_pizza.toppings.extend(toppings)
 
         self.db.session.add(new_pizza)
         self.db.session.commit()
@@ -87,7 +87,7 @@ class PizzaService:
             return {"error": "Pizza not found."}
         
         # Explicitly remove all toppings before deleting the pizza
-        toppings = pizza.toppings.all()  # Fetch the toppings as a list
+        toppings = pizza.toppings.all()
         for topping in toppings:
             pizza.toppings.remove(topping)
 

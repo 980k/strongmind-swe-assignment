@@ -71,7 +71,7 @@ def test_update_topping_invalid_name_special_chars(topping_controller, app):
     with app.test_request_context(json={"new_topping_name": "Mushroom@123"}):
         response = topping_controller.update_topping("1")
 
-    assert response == {"error": "New topping name must not contain numbers or special characters."}
+    assert response == {"error": "New topping name must contain only alphabetic characters."}
 
 def test_update_topping_invalid_name_length(topping_controller, app):
     """Test updating a topping with a new name that is too long."""
