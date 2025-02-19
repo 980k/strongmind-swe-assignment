@@ -79,3 +79,24 @@ The frontend is a multi-page application with a **landing page** that provides n
    - If the owner updates toppings, those changes are automatically reflected in all pizzas and the available topping list.  
 
 The system ensures that owners control the available toppings, while chefs can use them to craft pizzas dynamically.
+
+## Backend Overview
+![IMG_0012](https://github.com/user-attachments/assets/be4c957a-ffb8-43ce-b8cd-8c760c9ab385)
+
+The backend is structured in four distinct layers: **API layer**, **Controller layer**, **Service layer**, and **Database layer**.
+
+1. **API Layer**  
+   - Responsible for handling and routing incoming HTTP requests to appropriate endpoints.
+
+2. **Controller Layer**  
+   - Handles input parsing and validation, ensuring that incoming data meets the necessary format and constraints.
+   - Also performs data integrity checks to make sure that no invalid or duplicate data is passed along to the service layer.
+
+3. **Service Layer**  
+   - Encapsulates the business logic of the application. It interacts with the database through SQLAlchemy ORM and ensures that data entries (such as toppings and pizzas) are unique and meet the necessary conditions before processing.
+   
+4. **Database Layer**  
+   - Handles the persistent storage of pizzas and toppings, as well as the relationships between them.
+   - Ensures data integrity by maintaining a clean, consistent structure in the database.
+
+This layered architecture, combined with the use of the Singleton pattern and dependency injection, promotes **separation of concerns**, **testability**, and **modularity**, making the system easier to maintain and extend.
