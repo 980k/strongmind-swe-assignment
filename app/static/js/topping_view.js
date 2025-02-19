@@ -12,17 +12,14 @@ function showStatusMessage(message, isError = false) {
     const statusMessageElement = document.getElementById('status-message');
     statusMessageElement.textContent = message;
     
-    // Set the color based on the message type
     statusMessageElement.style.color = isError ? 'red' : 'green';
     
-    // Apply styles to make it visible
     statusMessageElement.style.visibility = 'visible';
     statusMessageElement.style.opacity = '1';
 
     // Hide the message after 3 seconds
     setTimeout(() => {
-        statusMessageElement.style.opacity = '0'; // Fade out
-        // Hide the message completely after 1 second to allow for the fade
+        statusMessageElement.style.opacity = '0';
         setTimeout(() => {
             statusMessageElement.style.visibility = 'hidden';
         }, 1000);
@@ -60,7 +57,7 @@ function updateToppingList(toppings) {
         const nameInput = document.createElement('input');
         nameInput.classList.add('edit-topping-input');
         nameInput.value = topping.name;
-        nameInput.style.display = 'none'; // Hide the input initially
+        nameInput.style.display = 'none';
 
         // Buttons (Edit & Delete)
         const updateButton = document.createElement('button');
@@ -93,7 +90,6 @@ toppingListElement.addEventListener('click', async (event) => {
         // Toggle between the name span and input field for inline editing
         const isEditing = nameInput.style.display === 'inline-block';
         if (isEditing) {
-            // If we are in editing mode, save the new name
             const newName = nameInput.value.trim();
             if (newName && newName !== nameSpan.textContent) {
                 await updateTopping(toppingId, newName);
@@ -102,7 +98,6 @@ toppingListElement.addEventListener('click', async (event) => {
             nameSpan.style.display = 'inline-block';
             button.textContent = 'Update';
         } else {
-            // Enter editing mode
             nameInput.style.display = 'inline-block';
             nameSpan.style.display = 'none';
             nameInput.focus();
@@ -135,9 +130,9 @@ async function addTopping(event) {
             throw new Error(errorData.error || "Failed to add topping.");
         }
         
-        toppingNameInput.value = ""; // Clear the input field
+        toppingNameInput.value = "";
         showStatusMessage("Topping added successfully!");
-        fetchToppings(); // Refresh the topping list
+        fetchToppings();
     } catch (error) {
         console.error("Error:", error);
         showStatusMessage(error.message, true);

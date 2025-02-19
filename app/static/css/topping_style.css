@@ -1,11 +1,9 @@
-/* Global Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body & Header */
 body {
     font-family: Arial, sans-serif;
     background-color: #f7f7f7;
@@ -25,7 +23,7 @@ h1 {
     text-align: center;
 }
 
-/* Form Styling */
+/* Form styling */
 form {
     background: white;
     padding: 20px;
@@ -66,16 +64,16 @@ form button:hover {
     background-color: #45a049;
 }
 
-/* Status Message */
+/* Status message styling */
 #status-message {
     text-align: center;
     font-size: 1.2rem;
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 4px;
-    visibility: hidden; /* Initially hidden */
-    opacity: 0; /* Initially invisible */
-    transition: opacity 1s, visibility 1s; /* Smooth transition for fade and visibility */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 1s, visibility 1s;
 }
 
 #status-message.success {
@@ -88,7 +86,7 @@ form button:hover {
     color: #721c24;
 }
 
-/* Topping List Styling */
+/* Topping list styling */
 #topping-list {
     list-style: none;
     padding: 0;
@@ -112,7 +110,7 @@ form button:hover {
     flex-grow: 1;
 }
 
-/* Editable Input */
+/* Editable input styling */
 .edit-topping-input {
     display: none;
     width: 100%;
@@ -121,7 +119,7 @@ form button:hover {
     border-radius: 4px;
 }
 
-/* Buttons */
+/* Buttons styling */
 .update-btn, .delete-btn {
     background-color: #007bff;
     color: white;
@@ -146,13 +144,12 @@ form button:hover {
 
 /* Style for the back link */
 .back-link {
-    text-decoration: none;  /* Remove the underline */
-    color: #4CAF50;         /* Change color to a green, or any color you prefer */
-      /* Optionally make it bold */
+    text-decoration: none;
+    color: #4CAF50;
 }
 
 .back-link:hover {
-    color: #45a049;         /* Darker green when hovered */
+    color: #45a049;
 }
 
 /* Responsive Adjustments */

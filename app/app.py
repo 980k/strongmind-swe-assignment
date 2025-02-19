@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -8,12 +9,14 @@ from models.pizza import Pizza
 from models.pizza_topping import PizzaTopping
 from routes.topping_routes import toppings_blueprint
 from routes.pizza_routes import pizzas_blueprint
-from flask_httpauth import HTTPBasicAuth
+from auth.auth import auth
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
-auth = HTTPBasicAuth()
 
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # Configure SQL database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -30,16 +33,7 @@ with app.app_context():
 app.register_blueprint(toppings_blueprint)
 app.register_blueprint(pizzas_blueprint)
 
-# Verify valid access
-expected_username = os.getenv('ADMIN_USERNAME')
-expected_password = os.getenv('ADMIN_PASSWORD')
-
-@auth.verify_password
-def verify_password(username, password):
-    if username == expected_username and password == expected_password:
-        return username
-
-# Render pages
+# Protect pages with authentication
 @app.route('/')
 @auth.login_required
 def home():
