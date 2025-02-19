@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/topping_style.css') }}">
 </head>
 <body>
-    <h1>Topping Management</h1>
+    <a href="{{ url_for('home') }}" class="back-link">&#8592; Return</a>
+
+    <header>
+        <h1>Topping Management</h1>
+    </header>
 
     <!-- Form to Add a New Topping -->
     <form id="add-topping-form">
@@ -17,7 +21,7 @@
     </form>
 
     <!-- Status message container (feedback to user) -->
-    <div id="status-message" style="display: none;"></div>
+    <div id="status-message"></div>
 
     <!-- List of Toppings -->
     <ul id="topping-list">

@@ -42,11 +42,22 @@ async function fetchJson(url, options = {}) {
 // ** Load available toppings **
 async function refreshPizzaOptions() {
     const toppings = await fetchJson('/toppings');
-    if (!toppings) return;
 
     const pizzaToppings = document.getElementById('pizza-toppings');
-    pizzaToppings.innerHTML = '';
+    pizzaToppings.innerHTML = ''; // Clear the current contents of the fieldset
 
+    // Check if there are no toppings
+    if (!toppings || toppings.length === 0) {
+        const noToppingsMessage = document.createElement('p');
+        noToppingsMessage.textContent = 'No toppings available.';
+
+        noToppingsMessage.classList.add('no-toppings-message');
+
+        pizzaToppings.appendChild(noToppingsMessage);
+        return; // Exit the function early
+    }
+
+    // Add each topping as a checkbox within the fieldset
     toppings.forEach(topping => {
         const label = document.createElement('label');
         label.innerHTML = `
@@ -64,7 +75,10 @@ async function fetchPizzas() {
     pizzasContainer.innerHTML = ""; // Clear before re-rendering
 
     if (!Array.isArray(pizzasData) || pizzasData.length === 0) {
-        pizzasContainer.innerHTML = "<p>No pizzas available.</p>"; // Show a message if no pizzas
+        const noPizzasMessage = document.createElement("p");
+        noPizzasMessage.textContent = "No pizzas available.";
+        noPizzasMessage.classList.add("no-pizzas-message"); // Add the CSS class for styling
+        pizzasContainer.appendChild(noPizzasMessage);
         return;
     }
 

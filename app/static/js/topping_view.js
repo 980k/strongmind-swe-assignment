@@ -11,12 +11,21 @@ const statusMessageElement = document.getElementById('status-message');
 function showStatusMessage(message, isError = false) {
     const statusMessageElement = document.getElementById('status-message');
     statusMessageElement.textContent = message;
+    
+    // Set the color based on the message type
     statusMessageElement.style.color = isError ? 'red' : 'green';
-    statusMessageElement.style.display = 'block';
+    
+    // Apply styles to make it visible
+    statusMessageElement.style.visibility = 'visible';
+    statusMessageElement.style.opacity = '1';
 
     // Hide the message after 3 seconds
     setTimeout(() => {
-        statusMessageElement.style.display = 'none';
+        statusMessageElement.style.opacity = '0'; // Fade out
+        // Hide the message completely after 1 second to allow for the fade
+        setTimeout(() => {
+            statusMessageElement.style.visibility = 'hidden';
+        }, 1000);
     }, 3000);
 }
 
@@ -150,7 +159,7 @@ async function updateTopping(toppingId, newName) {
         fetchToppings();
     } catch (error) {
         console.error("Error:", error);
-        showStatusMessage('Error updating topping: Topping exists or invalid entry', true);
+        showStatusMessage('Topping exists or invalid entry.', true);
     }
 }
 

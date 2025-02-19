@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pizza_style.css') }}">
 </head>
 <body>
+    <a href="{{ url_for('home') }}" class="back-link">&#8592; Return</a>
+
     <header>
         <h1>Pizza Management</h1>
     </header>
@@ -15,8 +17,8 @@
         <label for="pizza-name">Pizza Name:</label>
         <input type="text" id="pizza-name" name="pizza_name" required>
 
+        <label for="pizza-toppings">Select Toppings:</label>
         <fieldset id="pizza-toppings">
-            <legend>Select Toppings:</legend>
             <!-- Dynamically generated toppings -->
         </fieldset>
 
