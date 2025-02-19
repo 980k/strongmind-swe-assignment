@@ -81,7 +81,7 @@ The frontend is a multi-page application with a **landing page** that provides n
 The system ensures that owners control the available toppings, while chefs can use them to craft pizzas dynamically.
 
 ## Backend Overview
-![IMG_0012](https://github.com/user-attachments/assets/be4c957a-ffb8-43ce-b8cd-8c760c9ab385)
+![IMG_0012](https://github.com/user-attachments/assets/4df99cc6-5b35-451c-816e-12c06e0bb22b)
 
 The backend is structured in four distinct layers: **API layer**, **Controller layer**, **Service layer**, and **Database layer**.
 
@@ -100,3 +100,20 @@ The backend is structured in four distinct layers: **API layer**, **Controller l
    - Ensures data integrity by maintaining a clean, consistent structure in the database.
 
 This layered architecture, combined with the use of the Singleton pattern and dependency injection, promotes **separation of concerns**, **testability**, and **modularity**, making the system easier to maintain and extend.
+
+## Database Overview
+![IMG_0013](https://github.com/user-attachments/assets/d20b5d48-3b0f-442f-9633-b3588f759363)
+
+The database schema consists of three primary tables: **toppings**, **pizzas_toppings**, and **pizzas**.
+
+1. **Toppings Table**  
+   - Contains a primary key and a `name` column for each topping.
+
+2. **Pizzas Table**  
+   - Contains a primary key and a `name` column for each pizza.
+
+3. **Pizzas_Toppings Table**  
+   - Serves as a **junction table** to define the many-to-many relationship between pizzas and toppings. 
+   - Contains a primary key along with **foreign keys** that link to both the `pizzas` and `toppings` tables, establishing the associations between specific pizzas and their toppings.
+
+This structure ensures that each pizza can have multiple toppings and each topping can be associated with multiple pizzas, maintaining flexibility in managing pizza creations while ensuring data integrity.
