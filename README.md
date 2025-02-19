@@ -61,3 +61,21 @@
    ```sh
    pytest tests/
    ```
+
+---
+
+## Frontend Overview
+![IMG_0010](https://github.com/user-attachments/assets/4f2df60c-3aa9-4d59-be56-25b6e0f51c9e)
+
+The frontend is a multi-page application with a **landing page** that provides navigation to two sections:  
+
+1. **Owner Page**  
+   - Allows the owner to **create, update, delete, and view toppings**.  
+   - Any changes to toppings affect all pizzas using those toppings.  
+
+2. **Chef Page**  
+   - Enables the chef to **create, update, delete, and view pizzas**.  
+   - The chef can add toppings to pizzas, but only from the available selection created by the owner.  
+   - If the owner updates toppings, those changes are automatically reflected in all pizzas and the available topping list.  
+
+The system ensures that owners control the available toppings, while chefs can use them to craft pizzas dynamically.
